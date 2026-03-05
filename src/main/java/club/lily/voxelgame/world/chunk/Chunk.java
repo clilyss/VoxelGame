@@ -14,8 +14,8 @@ public class Chunk {
 
     private final BlockType[] blocks = new BlockType[WIDTH * HEIGHT * DEPTH];
     private LightMap  lightMap;
-    private ChunkMesh mesh  = new ChunkMesh();
-    private boolean   dirty = true;
+    private final ChunkMesh mesh = new ChunkMesh();
+    private volatile boolean dirty = true;
 
     public Chunk(int cx, int cz) {
         this.cx = cx; this.cz = cz;
@@ -41,14 +41,25 @@ public class Chunk {
     public void buildMesh(World world) {
         if (!dirty) return;
         dirty = false;
-        mesh.rebuild(this, world);
+        mesh.buildGeometry(this, world);
     }
+
+    public boolean tryScheduleBuild(World world, java.util.concurrent.ExecutorService pool) {
+        if (!dirty) return false;
+        if (!mesh.building.compareAndSet(false, true)) return false;
+        dirty = false;
+        pool.submit(() -> mesh.buildGeometry(this, world));
+        return true;
+    }
+
+    public boolean uploadIfReady() { return mesh.uploadIfReady(); }
 
     public void render()    { mesh.render(); }
     public void cleanup()   { mesh.cleanup(); }
     public void markDirty() { dirty = true; }
-    public boolean isDirty()       { return dirty; }
-    public LightMap getLightMap()  { return lightMap; }
+    public boolean isDirty()      { return dirty; }
+    public LightMap getLightMap() { return lightMap; }
+    public ChunkMesh getMesh()    { return mesh; }
 
     private int idx(int x, int y, int z) { return x + y * WIDTH + z * WIDTH * HEIGHT; }
 }
