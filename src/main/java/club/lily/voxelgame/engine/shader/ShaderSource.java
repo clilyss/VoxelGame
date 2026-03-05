@@ -48,26 +48,21 @@ public final class ShaderSource {
             vec4 tex = texture(uAtlas, vUV);
             if (tex.a < 0.1) discard;
 
-            vec3 albedo = pow(max(tex.rgb, vec3(0.001)), vec3(2.2));
-
+            vec3 albedo    = pow(max(tex.rgb, vec3(0.001)), vec3(2.2));
             vec3 skyLinear = pow(max(uSkyColor, vec3(0.001)), vec3(2.2));
 
-            vec3 sunlight  = skyLinear * (uSunStrength * 0.78);
-            vec3 ambientCol = mix(vec3(uAmbient * 0.55), skyLinear * uAmbient, uSunStrength);
+            vec3 sunlight   = vec3(1.00, 0.97, 0.90) * (uSunStrength * 0.92);
+            vec3 ambientCol = vec3(uAmbient) + skyLinear * uAmbient * 0.20;
 
-            float aoFactor = mix(0.80, 1.0, vAO);
+            float aoFactor  = mix(0.84, 1.0, vAO);
 
-            vec3 skyContrib = sunlight * vLight * aoFactor;
-            vec3 ambContrib = ambientCol;
+            vec3 lit     = albedo * ((sunlight * vLight * aoFactor) + ambientCol);
+            vec3 blended = mix(skyLinear, lit, vFogFactor);
 
-            vec3 lit = albedo * max(skyContrib + ambContrib, ambientCol);
-
-            vec3 fogLinear = skyLinear;
-            vec3 blended   = mix(fogLinear, lit, vFogFactor);
+            blended = blended / (blended + vec3(1.0));
 
             vec3 out_ = pow(max(blended, vec3(0.001)), vec3(1.0 / 2.2));
-
-            FragColor = vec4(clamp(out_, 0.0, 1.0), tex.a);
+            FragColor = vec4(out_, tex.a);
         }
         """;
 }

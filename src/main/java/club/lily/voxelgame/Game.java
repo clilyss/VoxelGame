@@ -108,19 +108,19 @@ public class Game {
     }
 
     private float ambientLevel(float t) {
-        if      (t < 0.2f) return lerp(0.02f, 0.04f, t / 0.2f);
-        else if (t < 0.3f) return lerp(0.04f, 0.07f, (t - 0.2f) / 0.1f);
-        else if (t < 0.7f) return 0.07f;
-        else if (t < 0.8f) return lerp(0.07f, 0.04f, (t - 0.7f) / 0.1f);
-        else               return lerp(0.04f, 0.02f,  (t - 0.8f) / 0.2f);
+        if      (t < 0.2f) return lerp(0.03f, 0.10f, t / 0.2f);
+        else if (t < 0.3f) return lerp(0.10f, 0.28f, (t - 0.2f) / 0.1f);
+        else if (t < 0.7f) return 0.28f;
+        else if (t < 0.8f) return lerp(0.28f, 0.10f, (t - 0.7f) / 0.1f);
+        else               return lerp(0.10f, 0.03f,  (t - 0.8f) / 0.2f);
     }
 
     private float sunStrength(float t) {
-        if      (t < 0.2f) return lerp(0.0f,  0.2f,  t / 0.2f);
-        else if (t < 0.3f) return lerp(0.2f,  1.0f,  (t - 0.2f) / 0.1f);
+        if      (t < 0.2f) return lerp(0.0f,  0.3f,  t / 0.2f);
+        else if (t < 0.3f) return lerp(0.3f,  1.0f,  (t - 0.2f) / 0.1f);
         else if (t < 0.7f) return 1.0f;
-        else if (t < 0.8f) return lerp(1.0f,  0.2f,  (t - 0.7f) / 0.1f);
-        else               return lerp(0.2f,  0.0f,   (t - 0.8f) / 0.2f);
+        else if (t < 0.8f) return lerp(1.0f,  0.3f,  (t - 0.7f) / 0.1f);
+        else               return lerp(0.3f,  0.0f,   (t - 0.8f) / 0.2f);
     }
 
     private static void lerp3(float[] out, float[] a, float[] b, float t) {
