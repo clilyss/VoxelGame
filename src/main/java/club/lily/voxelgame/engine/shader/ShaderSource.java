@@ -15,7 +15,6 @@ public final class ShaderSource {
         out float vLight;
         out float vAO;
         out float vFogFactor;
-        out float vHeight;
 
         uniform mat4 uView;
         uniform mat4 uProjection;
@@ -26,7 +25,6 @@ public final class ShaderSource {
             vUV           = aUV;
             vLight        = aLight;
             vAO           = aAO;
-            vHeight       = aPos.y;
             float fog     = length(viewPos.xyz) * 0.007;
             vFogFactor    = clamp(exp(-fog * fog), 0.0, 1.0);
         }
@@ -38,13 +36,13 @@ public final class ShaderSource {
         in float vLight;
         in float vAO;
         in float vFogFactor;
-        in float vHeight;
 
         out vec4 FragColor;
 
         uniform sampler2D uAtlas;
         uniform vec3  uSkyColor;
         uniform float uAmbient;
+        uniform float uSunStrength;
 
         void main() {
             vec4 tex = texture(uAtlas, vUV);
@@ -52,20 +50,19 @@ public final class ShaderSource {
 
             vec3 albedo = pow(max(tex.rgb, vec3(0.001)), vec3(2.2));
 
-            float skyL      = max(vLight, uAmbient);
-            float lightSq   = skyL * skyL;
+            vec3 skyLinear = pow(max(uSkyColor, vec3(0.001)), vec3(2.2));
 
-            float aoStrength = 1.0 - skyL;
-            float aoFactor   = mix(1.0, mix(0.75, 1.0, vAO), aoStrength);
+            vec3 sunlight  = skyLinear * (uSunStrength * 0.78);
+            vec3 ambientCol = mix(vec3(uAmbient * 0.55), skyLinear * uAmbient, uSunStrength);
 
-            float finalLight = max(lightSq * aoFactor, uAmbient * uAmbient);
+            float aoFactor = mix(0.80, 1.0, vAO);
 
-            vec3 lit = albedo * finalLight;
+            vec3 skyContrib = sunlight * vLight * aoFactor;
+            vec3 ambContrib = ambientCol;
 
-            float heightFade = clamp(vHeight / 80.0, 0.0, 1.0);
-            lit *= mix(0.85, 1.0, heightFade);
+            vec3 lit = albedo * max(skyContrib + ambContrib, ambientCol);
 
-            vec3 fogLinear = pow(max(uSkyColor, vec3(0.001)), vec3(2.2));
+            vec3 fogLinear = skyLinear;
             vec3 blended   = mix(fogLinear, lit, vFogFactor);
 
             vec3 out_ = pow(max(blended, vec3(0.001)), vec3(1.0 / 2.2));

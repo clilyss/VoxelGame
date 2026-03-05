@@ -1,5 +1,6 @@
 package club.lily.voxelgame.world.light;
 
+import club.lily.voxelgame.world.World;
 import club.lily.voxelgame.world.chunk.Chunk;
 
 public class LightMap {
@@ -40,15 +41,15 @@ public class LightMap {
         return Math.max(getSky(x, y, z), getBlockLight(x, y, z));
     }
 
-    public void computeSunlight(Chunk chunk) {
+    public void computeSunlight(Chunk chunk, World world) {
         for (int i = 0; i < data.length; i++) data[i] = (byte)(data[i] & 0x0F);
-        SunlightPropagator.propagate(this, chunk);
+        SunlightPropagator.propagate(this, chunk, world);
     }
 
     public static float ao(boolean s1, boolean s2, boolean corner) {
-        if (s1 && s2) return 0.0f;
+        if (s1 && s2) return 0.55f;
         int occ = (s1 ? 1 : 0) + (s2 ? 1 : 0) + (corner ? 1 : 0);
-        return 1.0f - occ * 0.12f;
+        return 1.0f - occ * 0.07f;
     }
 
     public boolean oob(int x, int y, int z) {

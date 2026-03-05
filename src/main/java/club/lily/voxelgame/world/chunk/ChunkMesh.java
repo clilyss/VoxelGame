@@ -54,44 +54,44 @@ public class ChunkMesh {
                 float l11=skyAt(chunk,world,lx+1,ly+1,lz  ); float ao11=aoTop(chunk,world,lx,ly,lz,+1,-1);
                 float l01=skyAt(chunk,world,lx,  ly+1,lz  ); float ao01=aoTop(chunk,world,lx,ly,lz,-1,-1);
                 yield new float[][]{{x,y+1,z+1,   u0,v0+dv,    l00*dirBias,ao00},
-                                    {x+1,y+1,z+1, u0+du,v0+dv, l10*dirBias,ao10},
-                                    {x+1,y+1,z,   u0+du,v0,    l11*dirBias,ao11},
-                                    {x,y+1,z,     u0,v0,        l01*dirBias,ao01}};
+                        {x+1,y+1,z+1, u0+du,v0+dv, l10*dirBias,ao10},
+                        {x+1,y+1,z,   u0+du,v0,    l11*dirBias,ao11},
+                        {x,y+1,z,     u0,v0,        l01*dirBias,ao01}};
             }
             case BOTTOM -> {
                 float l = skyAt(chunk,world,lx,ly-1,lz);
                 yield new float[][]{{x,y,z,       u0,v0,        l*dirBias,1f},
-                                    {x+1,y,z,     u0+du,v0,     l*dirBias,1f},
-                                    {x+1,y,z+1,   u0+du,v0+dv,  l*dirBias,1f},
-                                    {x,y,z+1,     u0,v0+dv,     l*dirBias,1f}};
+                        {x+1,y,z,     u0+du,v0,     l*dirBias,1f},
+                        {x+1,y,z+1,   u0+du,v0+dv,  l*dirBias,1f},
+                        {x,y,z+1,     u0,v0+dv,     l*dirBias,1f}};
             }
             case FRONT -> {
                 float l=skyAt(chunk,world,lx,ly,lz+1);
                 yield new float[][]{{x,y,z+1,     u0,v0+dv,    l*dirBias,aoFront(chunk,world,lx,ly,lz,-1, 0)},
-                                    {x+1,y,z+1,   u0+du,v0+dv, l*dirBias,aoFront(chunk,world,lx,ly,lz,+1, 0)},
-                                    {x+1,y+1,z+1, u0+du,v0,    l*dirBias,aoFront(chunk,world,lx,ly,lz,+1,+1)},
-                                    {x,y+1,z+1,   u0,v0,        l*dirBias,aoFront(chunk,world,lx,ly,lz,-1,+1)}};
+                        {x+1,y,z+1,   u0+du,v0+dv, l*dirBias,aoFront(chunk,world,lx,ly,lz,+1, 0)},
+                        {x+1,y+1,z+1, u0+du,v0,    l*dirBias,aoFront(chunk,world,lx,ly,lz,+1,+1)},
+                        {x,y+1,z+1,   u0,v0,        l*dirBias,aoFront(chunk,world,lx,ly,lz,-1,+1)}};
             }
             case BACK -> {
                 float l=skyAt(chunk,world,lx,ly,lz-1);
                 yield new float[][]{{x+1,y,z,     u0,v0+dv,    l*dirBias,aoBack(chunk,world,lx,ly,lz,+1, 0)},
-                                    {x,y,z,       u0+du,v0+dv, l*dirBias,aoBack(chunk,world,lx,ly,lz,-1, 0)},
-                                    {x,y+1,z,     u0+du,v0,    l*dirBias,aoBack(chunk,world,lx,ly,lz,-1,+1)},
-                                    {x+1,y+1,z,   u0,v0,        l*dirBias,aoBack(chunk,world,lx,ly,lz,+1,+1)}};
+                        {x,y,z,       u0+du,v0+dv, l*dirBias,aoBack(chunk,world,lx,ly,lz,-1, 0)},
+                        {x,y+1,z,     u0+du,v0,    l*dirBias,aoBack(chunk,world,lx,ly,lz,-1,+1)},
+                        {x+1,y+1,z,   u0,v0,        l*dirBias,aoBack(chunk,world,lx,ly,lz,+1,+1)}};
             }
             case RIGHT -> {
                 float l=skyAt(chunk,world,lx+1,ly,lz);
                 yield new float[][]{{x+1,y,z+1,   u0,v0+dv,    l*dirBias,aoRight(chunk,world,lx,ly,lz,+1, 0)},
-                                    {x+1,y,z,     u0+du,v0+dv, l*dirBias,aoRight(chunk,world,lx,ly,lz,-1, 0)},
-                                    {x+1,y+1,z,   u0+du,v0,    l*dirBias,aoRight(chunk,world,lx,ly,lz,-1,+1)},
-                                    {x+1,y+1,z+1, u0,v0,        l*dirBias,aoRight(chunk,world,lx,ly,lz,+1,+1)}};
+                        {x+1,y,z,     u0+du,v0+dv, l*dirBias,aoRight(chunk,world,lx,ly,lz,-1, 0)},
+                        {x+1,y+1,z,   u0+du,v0,    l*dirBias,aoRight(chunk,world,lx,ly,lz,-1,+1)},
+                        {x+1,y+1,z+1, u0,v0,        l*dirBias,aoRight(chunk,world,lx,ly,lz,+1,+1)}};
             }
             case LEFT -> {
                 float l=skyAt(chunk,world,lx-1,ly,lz);
                 yield new float[][]{{x,y,z,       u0,v0+dv,    l*dirBias,aoLeft(chunk,world,lx,ly,lz,-1, 0)},
-                                    {x,y,z+1,     u0+du,v0+dv, l*dirBias,aoLeft(chunk,world,lx,ly,lz,+1, 0)},
-                                    {x,y+1,z+1,   u0+du,v0,    l*dirBias,aoLeft(chunk,world,lx,ly,lz,+1,+1)},
-                                    {x,y+1,z,     u0,v0,        l*dirBias,aoLeft(chunk,world,lx,ly,lz,-1,+1)}};
+                        {x,y,z+1,     u0+du,v0+dv, l*dirBias,aoLeft(chunk,world,lx,ly,lz,+1, 0)},
+                        {x,y+1,z+1,   u0+du,v0,    l*dirBias,aoLeft(chunk,world,lx,ly,lz,+1,+1)},
+                        {x,y+1,z,     u0,v0,        l*dirBias,aoLeft(chunk,world,lx,ly,lz,-1,+1)}};
             }
         };
 
@@ -103,29 +103,29 @@ public class ChunkMesh {
     private float skyAt(Chunk chunk, World world, int lx, int ly, int lz) {
         if (ly < 0) return MIN_LIGHT;
         if (ly >= Chunk.HEIGHT) return 1.0f;
+        float v = rawSky(chunk, world, lx, ly, lz);
+        if (v > MIN_LIGHT) return v;
+        float best = MIN_LIGHT;
+        best = Math.max(best, rawSky(chunk, world, lx - 1, ly, lz));
+        best = Math.max(best, rawSky(chunk, world, lx + 1, ly, lz));
+        best = Math.max(best, rawSky(chunk, world, lx, ly, lz - 1));
+        best = Math.max(best, rawSky(chunk, world, lx, ly, lz + 1));
+        best = Math.max(best, rawSky(chunk, world, lx, ly + 1, lz));
+        return best;
+    }
+
+    private float rawSky(Chunk chunk, World world, int lx, int ly, int lz) {
+        if (ly < 0 || ly >= Chunk.HEIGHT) return ly >= Chunk.HEIGHT ? 1.0f : MIN_LIGHT;
         if (lx >= 0 && lx < Chunk.WIDTH && lz >= 0 && lz < Chunk.DEPTH) {
             LightMap lm = chunk.getLightMap();
             if (lm == null) return 1.0f;
-            float v = lm.getSky(lx, ly, lz) / (float) LightMap.MAX_LIGHT;
-            if (v <= 0f) v = searchUpForLight(chunk, lx, ly, lz);
-            return Math.max(v, MIN_LIGHT);
+            return lm.getSky(lx, ly, lz) / (float) LightMap.MAX_LIGHT;
         }
         int wx = chunk.cx * Chunk.WIDTH + lx, wz = chunk.cz * Chunk.DEPTH + lz;
         Chunk nb = world.getChunkAt(wx, wz);
         if (nb == null || nb.getLightMap() == null) return 1.0f;
         int nlx = Math.floorMod(wx, Chunk.WIDTH), nlz = Math.floorMod(wz, Chunk.DEPTH);
-        return Math.max(nb.getLightMap().getSky(nlx, ly, nlz) / (float) LightMap.MAX_LIGHT, MIN_LIGHT);
-    }
-
-    private float searchUpForLight(Chunk chunk, int lx, int ly, int lz) {
-        LightMap lm = chunk.getLightMap();
-        for (int y = ly + 1; y < Chunk.HEIGHT; y++) {
-            if (chunk.getBlock(lx, y, lz) == BlockType.AIR && lm != null) {
-                float v = lm.getSky(lx, y, lz) / (float) LightMap.MAX_LIGHT;
-                if (v > 0f) return v * 0.85f;
-            }
-        }
-        return MIN_LIGHT;
+        return nb.getLightMap().getSky(nlx, ly, nlz) / (float) LightMap.MAX_LIGHT;
     }
 
     private float aoTop  (Chunk c, World w, int lx, int ly, int lz, int dx, int dz) { return LightMap.ao(solid(c,w,lx+dx,ly+1,lz),    solid(c,w,lx,ly+1,lz+dz),    solid(c,w,lx+dx,ly+1,lz+dz)); }

@@ -35,7 +35,7 @@ public class Chunk {
 
     public void computeLight(World world) {
         lightMap = new LightMap(WIDTH, HEIGHT, DEPTH);
-        lightMap.computeSunlight(this);
+        lightMap.computeSunlight(this, world);
     }
 
     public void buildMesh(World world) {

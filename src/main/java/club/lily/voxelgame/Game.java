@@ -20,9 +20,9 @@ public class Game {
     private static final float NEAR   = 0.1f;
     private static final float FAR    = 600.0f;
 
-    private static final float[] SKY_DAY   = {0.53f, 0.81f, 0.98f};
-    private static final float[] SKY_DAWN  = {0.95f, 0.55f, 0.25f};
-    private static final float[] SKY_NIGHT = {0.02f, 0.03f, 0.08f};
+    private static final float[] SKY_DAY   = {0.42f, 0.62f, 0.78f};
+    private static final float[] SKY_DAWN  = {0.72f, 0.38f, 0.18f};
+    private static final float[] SKY_NIGHT = {0.01f, 0.02f, 0.06f};
 
     private Window       window;
     private Shader       shader;
@@ -85,6 +85,7 @@ public class Game {
             shader.setMatrix4f("uProjection", camera.getProjectionMatrix());
             shader.setVec3("uSkyColor",       sky[0], sky[1], sky[2]);
             shader.setFloat("uAmbient",       ambient);
+            shader.setFloat("uSunStrength",   sunStrength(timeOfDay));
 
             world.render(shader);
             window.swapAndPoll();
@@ -107,11 +108,19 @@ public class Game {
     }
 
     private float ambientLevel(float t) {
-        if      (t < 0.2f) return lerp(0.05f, 0.08f, t / 0.2f);
-        else if (t < 0.3f) return lerp(0.08f, 0.15f, (t - 0.2f) / 0.1f);
-        else if (t < 0.7f) return 0.15f;
-        else if (t < 0.8f) return lerp(0.15f, 0.08f, (t - 0.7f) / 0.1f);
-        else               return lerp(0.08f, 0.05f,  (t - 0.8f) / 0.2f);
+        if      (t < 0.2f) return lerp(0.02f, 0.04f, t / 0.2f);
+        else if (t < 0.3f) return lerp(0.04f, 0.07f, (t - 0.2f) / 0.1f);
+        else if (t < 0.7f) return 0.07f;
+        else if (t < 0.8f) return lerp(0.07f, 0.04f, (t - 0.7f) / 0.1f);
+        else               return lerp(0.04f, 0.02f,  (t - 0.8f) / 0.2f);
+    }
+
+    private float sunStrength(float t) {
+        if      (t < 0.2f) return lerp(0.0f,  0.2f,  t / 0.2f);
+        else if (t < 0.3f) return lerp(0.2f,  1.0f,  (t - 0.2f) / 0.1f);
+        else if (t < 0.7f) return 1.0f;
+        else if (t < 0.8f) return lerp(1.0f,  0.2f,  (t - 0.7f) / 0.1f);
+        else               return lerp(0.2f,  0.0f,   (t - 0.8f) / 0.2f);
     }
 
     private static void lerp3(float[] out, float[] a, float[] b, float t) {
