@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL33.*;
 
 public class ChunkMesh {
 
-    private static final float MIN_LIGHT = 0.05f;
+    private static final float MIN_LIGHT = 0.15f;
     private static final int MAX_VERTS = Chunk.WIDTH * Chunk.HEIGHT * Chunk.DEPTH * 6 * 6 * 7;
 
     private static final ThreadLocal<float[]> THREAD_BUFFER = ThreadLocal.withInitial(() -> new float[MAX_VERTS]);

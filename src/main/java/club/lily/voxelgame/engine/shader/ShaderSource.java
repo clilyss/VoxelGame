@@ -56,11 +56,13 @@ public final class ShaderSource {
             vec3 albedo    = toLinear(tex.rgb);
             vec3 skyLinear = toLinear(uSkyColor);
 
-            vec3 sunlight   = vec3(1.00, 0.97, 0.90) * (uSunStrength * 0.92);
-            vec3 ambientCol = vec3(uAmbient) + skyLinear * (uAmbient * 0.20);
+            float lightLevel = max(vLight, uAmbient * 0.6);
 
-            float ao  = mix(0.84, 1.0, vAO);
-            vec3  lit = albedo * (sunlight * vLight * ao + ambientCol);
+            vec3 sunlight   = vec3(1.00, 0.97, 0.90) * uSunStrength;
+            vec3 ambientCol = vec3(uAmbient) + skyLinear * 0.15;
+
+            float ao  = mix(0.75, 1.0, vAO);
+            vec3  lit = albedo * (sunlight * lightLevel + ambientCol * ao);
 
             vec3 blended = mix(skyLinear, lit, vFogFactor);
             blended      = blended / (blended + vec3(1.0));

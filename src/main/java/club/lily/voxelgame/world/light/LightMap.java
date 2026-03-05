@@ -47,9 +47,9 @@ public class LightMap {
     }
 
     public static float ao(boolean s1, boolean s2, boolean corner) {
-        if (s1 && s2) return 0.55f;
+        if (s1 && s2) return 0.70f;
         int occ = (s1 ? 1 : 0) + (s2 ? 1 : 0) + (corner ? 1 : 0);
-        return 1.0f - occ * 0.07f;
+        return 1.0f - occ * 0.04f;
     }
 
     public boolean oob(int x, int y, int z) {
