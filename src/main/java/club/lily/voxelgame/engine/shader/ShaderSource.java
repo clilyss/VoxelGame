@@ -20,13 +20,15 @@ public final class ShaderSource {
         uniform mat4 uProjection;
 
         void main() {
-            vec4 viewPos  = uView * vec4(aPos, 1.0);
-            gl_Position   = uProjection * viewPos;
-            vUV           = aUV;
-            vLight        = aLight;
-            vAO           = aAO;
-            float fog     = length(viewPos.xyz) * 0.007;
-            vFogFactor    = clamp(exp(-fog * fog), 0.0, 1.0);
+            vec4 viewPos = uView * vec4(aPos, 1.0);
+            gl_Position  = uProjection * viewPos;
+            vUV          = aUV;
+            vLight       = aLight;
+            vAO          = aAO;
+
+            float dist   = length(viewPos.xyz);
+            float fog    = dist * 0.006;
+            vFogFactor   = clamp(exp(-fog * fog), 0.0, 1.0);
         }
         """;
 
@@ -44,25 +46,26 @@ public final class ShaderSource {
         uniform float uAmbient;
         uniform float uSunStrength;
 
+        vec3 toLinear(vec3 c) { return c * (c * (c * 0.305306011 + 0.682171111) + 0.012522878); }
+        vec3 toSRGB(vec3 c)   { return max(vec3(1.055) * pow(max(c, vec3(0.0)), vec3(0.41666)) - vec3(0.055), vec3(0.0)); }
+
         void main() {
             vec4 tex = texture(uAtlas, vUV);
-            if (tex.a < 0.1) discard;
+            if (tex.a < 0.5) discard;
 
-            vec3 albedo    = pow(max(tex.rgb, vec3(0.001)), vec3(2.2));
-            vec3 skyLinear = pow(max(uSkyColor, vec3(0.001)), vec3(2.2));
+            vec3 albedo    = toLinear(tex.rgb);
+            vec3 skyLinear = toLinear(uSkyColor);
 
             vec3 sunlight   = vec3(1.00, 0.97, 0.90) * (uSunStrength * 0.92);
-            vec3 ambientCol = vec3(uAmbient) + skyLinear * uAmbient * 0.20;
+            vec3 ambientCol = vec3(uAmbient) + skyLinear * (uAmbient * 0.20);
 
-            float aoFactor  = mix(0.84, 1.0, vAO);
+            float ao  = mix(0.84, 1.0, vAO);
+            vec3  lit = albedo * (sunlight * vLight * ao + ambientCol);
 
-            vec3 lit     = albedo * ((sunlight * vLight * aoFactor) + ambientCol);
             vec3 blended = mix(skyLinear, lit, vFogFactor);
+            blended      = blended / (blended + vec3(1.0));
 
-            blended = blended / (blended + vec3(1.0));
-
-            vec3 out_ = pow(max(blended, vec3(0.001)), vec3(1.0 / 2.2));
-            FragColor = vec4(out_, tex.a);
+            FragColor = vec4(toSRGB(blended), tex.a);
         }
         """;
 }
