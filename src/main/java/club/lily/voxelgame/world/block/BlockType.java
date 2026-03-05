@@ -1,9 +1,9 @@
-package club.lily.voxelgame.world;
+package club.lily.voxelgame.world.block;
 
 import club.lily.voxelgame.assets.TextureGen;
 
 public enum BlockType {
-    
+
     AIR    (-1,                   -1,                   -1),
     GRASS  (T.GRASS_TOP,          T.GRASS_SIDE,         T.DIRT),
     DIRT   (T.DIRT,               T.DIRT,               T.DIRT),
@@ -20,13 +20,6 @@ public enum BlockType {
         this.tileTop    = tileTop;
         this.tileSide   = tileSide;
         this.tileBottom = tileBottom;
-    }
-
-    
-    public static float[] uv(int tileCol) {
-        float u = (float) tileCol / TextureGen.COLS;
-        float v = 0.0f;
-        return new float[]{u, v};
     }
 
     public static float tileU() { return 1.0f / TextureGen.COLS; }

@@ -1,11 +1,12 @@
 package club.lily.voxelgame;
 
-import club.lily.voxelgame.engine.AtlasTexture;
-import club.lily.voxelgame.engine.Camera;
-import club.lily.voxelgame.engine.Shader;
-import club.lily.voxelgame.engine.Window;
+import club.lily.voxelgame.engine.camera.Camera;
+import club.lily.voxelgame.engine.shader.Shader;
+import club.lily.voxelgame.engine.texture.AtlasTexture;
+import club.lily.voxelgame.engine.window.Window;
 import club.lily.voxelgame.player.Player;
 import club.lily.voxelgame.world.World;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -29,8 +30,7 @@ public class Game {
     private World        world;
     private Player       player;
     private AtlasTexture atlas;
-
-    private float timeOfDay = 0.25f;
+    private float        timeOfDay = 0.25f;
 
     public void run() {
         window = new Window(WIDTH, HEIGHT, "VoxelGame  |  WASD=Move  Space=Jump  LMB=Break  RMB=Place  ESC=Quit");
@@ -48,11 +48,8 @@ public class Game {
         camera = new Camera(WIDTH, HEIGHT, FOV, NEAR, FAR);
         world  = new World();
 
-        System.out.println("Generating world...");
         world.generate();
-        System.out.println("Building meshes...");
         world.buildAllMeshes();
-        System.out.println("Ready!");
 
         player = new Player(camera, world);
         player.spawnOnTerrain(8, 8);
@@ -74,11 +71,11 @@ public class Game {
 
             player.update(window, delta);
 
-            org.joml.Vector3f pos = camera.getPosition();
+            Vector3f pos = camera.getPosition();
             world.updateAroundPlayer(pos.x, pos.z);
 
-            float[] sky = skyColor(timeOfDay);
-            float ambient = ambientLevel(timeOfDay);
+            float[] sky     = skyColor(timeOfDay);
+            float   ambient = ambientLevel(timeOfDay);
             glClearColor(sky[0], sky[1], sky[2], 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -100,27 +97,21 @@ public class Game {
     }
 
     private float[] skyColor(float t) {
-        float[] result = new float[3];
-        if (t < 0.2f) {
-            lerp3(result, SKY_NIGHT, SKY_DAWN, t / 0.2f);
-        } else if (t < 0.3f) {
-            lerp3(result, SKY_DAWN, SKY_DAY, (t - 0.2f) / 0.1f);
-        } else if (t < 0.7f) {
-            result[0] = SKY_DAY[0]; result[1] = SKY_DAY[1]; result[2] = SKY_DAY[2];
-        } else if (t < 0.8f) {
-            lerp3(result, SKY_DAY, SKY_DAWN, (t - 0.7f) / 0.1f);
-        } else {
-            lerp3(result, SKY_DAWN, SKY_NIGHT, (t - 0.8f) / 0.2f);
-        }
-        return result;
+        float[] r = new float[3];
+        if      (t < 0.2f) lerp3(r, SKY_NIGHT, SKY_DAWN,  t / 0.2f);
+        else if (t < 0.3f) lerp3(r, SKY_DAWN,  SKY_DAY,   (t - 0.2f) / 0.1f);
+        else if (t < 0.7f) { r[0]=SKY_DAY[0]; r[1]=SKY_DAY[1]; r[2]=SKY_DAY[2]; }
+        else if (t < 0.8f) lerp3(r, SKY_DAY,   SKY_DAWN,  (t - 0.7f) / 0.1f);
+        else               lerp3(r, SKY_DAWN,   SKY_NIGHT, (t - 0.8f) / 0.2f);
+        return r;
     }
 
     private float ambientLevel(float t) {
-        if (t < 0.2f)      return lerp(0.05f, 0.08f, t / 0.2f);
+        if      (t < 0.2f) return lerp(0.05f, 0.08f, t / 0.2f);
         else if (t < 0.3f) return lerp(0.08f, 0.15f, (t - 0.2f) / 0.1f);
         else if (t < 0.7f) return 0.15f;
         else if (t < 0.8f) return lerp(0.15f, 0.08f, (t - 0.7f) / 0.1f);
-        else               return lerp(0.08f, 0.05f, (t - 0.8f) / 0.2f);
+        else               return lerp(0.08f, 0.05f,  (t - 0.8f) / 0.2f);
     }
 
     private static void lerp3(float[] out, float[] a, float[] b, float t) {

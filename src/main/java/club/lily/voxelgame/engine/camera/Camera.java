@@ -1,4 +1,4 @@
-package club.lily.voxelgame.engine;
+package club.lily.voxelgame.engine.camera;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -19,10 +19,7 @@ public class Camera {
     private static final float SENSITIVITY = 0.1f;
 
     public Camera(int width, int height, float fovDeg, float near, float far) {
-        projection.perspective(
-                (float) Math.toRadians(fovDeg),
-                (float) width / height,
-                near, far);
+        projection.perspective((float) Math.toRadians(fovDeg), (float) width / height, near, far);
         updateVectors();
     }
 
@@ -51,9 +48,8 @@ public class Camera {
     }
 
     public Matrix4f getProjectionMatrix() { return projection; }
-
-    public Vector3f getPosition() { return position; }
+    public Vector3f getPosition()         { return position; }
     public void     setPosition(float x, float y, float z) { position.set(x, y, z); }
-    public Vector3f getFront()    { return front; }
-    public Vector3f getRight()    { return right; }
+    public Vector3f getFront()            { return front; }
+    public Vector3f getRight()            { return right; }
 }

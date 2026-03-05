@@ -1,6 +1,9 @@
 package club.lily.voxelgame.world;
 
-import club.lily.voxelgame.engine.Shader;
+import club.lily.voxelgame.engine.shader.Shader;
+import club.lily.voxelgame.world.block.BlockType;
+import club.lily.voxelgame.world.chunk.Chunk;
+import club.lily.voxelgame.world.gen.WorldGen;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,9 +22,7 @@ public class World {
     }
 
     public void buildAllMeshes() {
-        System.out.println("  Computing lighting...");
         for (Chunk chunk : chunks.values()) chunk.computeLight(this);
-        System.out.println("  Building meshes...");
         for (Chunk chunk : chunks.values()) chunk.buildMesh(this);
     }
 
@@ -38,10 +39,8 @@ public class World {
                     chunks.put(k, chunk);
                     chunk.computeLight(this);
                     chunk.buildMesh(this);
-                    relight(cx - 1, cz);
-                    relight(cx + 1, cz);
-                    relight(cx, cz - 1);
-                    relight(cx, cz + 1);
+                    relight(cx-1, cz); relight(cx+1, cz);
+                    relight(cx, cz-1); relight(cx, cz+1);
                 }
             }
         }
@@ -67,8 +66,8 @@ public class World {
         c.setBlock(localX(wx), wy, localZ(wz), type);
         int ccx = chunkCoord(wx), ccz = chunkCoord(wz);
         relight(ccx, ccz);
-        relight(ccx - 1, ccz); relight(ccx + 1, ccz);
-        relight(ccx, ccz - 1); relight(ccx, ccz + 1);
+        relight(ccx-1, ccz); relight(ccx+1, ccz);
+        relight(ccx, ccz-1); relight(ccx, ccz+1);
     }
 
     private void relight(int cx, int cz) {
@@ -89,12 +88,6 @@ public class World {
     public void cleanup() { chunks.values().forEach(Chunk::cleanup); }
 
     public Chunk getChunkAt(int wx, int wz) { return chunkAt(wx, wz); }
-    private Chunk chunkAt(int wx, int wz)   { return chunks.get(key(chunkCoord(wx), chunkCoord(wz))); }
-
-    private static int  chunkCoord(int w)   { return Math.floorDiv(w, Chunk.WIDTH); }
-    private static int  localX(int wx)      { return Math.floorMod(wx, Chunk.WIDTH); }
-    private static int  localZ(int wz)      { return Math.floorMod(wz, Chunk.DEPTH); }
-    private static long key(int cx, int cz) { return ((long) cx << 32) | (cz & 0xFFFFFFFFL); }
 
     public int getTopY(int wx, int wz) {
         for (int y = Chunk.HEIGHT - 1; y >= 0; y--)
@@ -103,4 +96,11 @@ public class World {
     }
 
     public Collection<Chunk> getChunks() { return chunks.values(); }
+
+    private Chunk chunkAt(int wx, int wz) { return chunks.get(key(chunkCoord(wx), chunkCoord(wz))); }
+
+    private static int  chunkCoord(int w)   { return Math.floorDiv(w, Chunk.WIDTH); }
+    private static int  localX(int wx)      { return Math.floorMod(wx, Chunk.WIDTH); }
+    private static int  localZ(int wz)      { return Math.floorMod(wz, Chunk.DEPTH); }
+    private static long key(int cx, int cz) { return ((long) cx << 32) | (cz & 0xFFFFFFFFL); }
 }

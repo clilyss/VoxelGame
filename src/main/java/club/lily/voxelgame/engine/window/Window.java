@@ -1,4 +1,4 @@
-package club.lily.voxelgame.engine;
+package club.lily.voxelgame.engine.window;
 
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.MemoryStack;
@@ -16,9 +16,8 @@ public class Window {
     private final String title;
     private       long   handle;
 
-    
-    private double mouseDX, mouseDY;
-    private double lastX, lastY;
+    private double  mouseDX, mouseDY;
+    private double  lastX, lastY;
     private boolean firstMouse = true;
 
     public Window(int width, int height, String title) {
@@ -35,12 +34,11 @@ public class Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE,        GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE); 
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 
         handle = glfwCreateWindow(width, height, title, NULL, NULL);
         if (handle == NULL) throw new RuntimeException("Failed to create GLFW window");
 
-        
         try (MemoryStack stack = stackPush()) {
             IntBuffer pw = stack.mallocInt(1);
             IntBuffer ph = stack.mallocInt(1);
@@ -51,16 +49,14 @@ public class Window {
         }
 
         glfwMakeContextCurrent(handle);
-        glfwSwapInterval(1);           
+        glfwSwapInterval(1);
         glfwShowWindow(handle);
-
-        
         glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         glfwSetCursorPosCallback(handle, (win, xpos, ypos) -> {
             if (firstMouse) { lastX = xpos; lastY = ypos; firstMouse = false; }
-            mouseDX =  xpos - lastX;
-            mouseDY =  lastY - ypos; 
+            mouseDX = xpos - lastX;
+            mouseDY = lastY - ypos;
             lastX = xpos;
             lastY = ypos;
         });
@@ -80,11 +76,10 @@ public class Window {
         glfwSetErrorCallback(null).free();
     }
 
-    
     public boolean shouldClose() { return glfwWindowShouldClose(handle); }
-    public long   getHandle()    { return handle; }
-    public double getMouseDX()   { return mouseDX; }
-    public double getMouseDY()   { return mouseDY; }
-    public int    getWidth()     { return width; }
-    public int    getHeight()    { return height; }
+    public long    getHandle()   { return handle; }
+    public double  getMouseDX()  { return mouseDX; }
+    public double  getMouseDY()  { return mouseDY; }
+    public int     getWidth()    { return width; }
+    public int     getHeight()   { return height; }
 }
