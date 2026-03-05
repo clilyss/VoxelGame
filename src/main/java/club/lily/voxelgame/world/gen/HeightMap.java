@@ -13,11 +13,12 @@ public final class HeightMap {
                 int wx = chunk.cx * Chunk.WIDTH + x;
                 int wz = chunk.cz * Chunk.DEPTH + z;
                 float n = 0;
-                n += Noise.get(wx * 0.007f, wz * 0.007f) * 22;
-                n += Noise.get(wx * 0.020f, wz * 0.020f) * 10;
-                n += Noise.get(wx * 0.060f, wz * 0.060f) *  4;
-                n += Noise.get(wx * 0.120f, wz * 0.120f) *  2;
-                h[x][z] = Math.max(2, Math.min(Chunk.HEIGHT - 5, 60 + (int) n));
+                n += Noise.get(wx * 0.006f, wz * 0.006f) * 38;
+                n += Noise.get(wx * 0.018f, wz * 0.018f) * 18;
+                n += Noise.get(wx * 0.055f, wz * 0.055f) *  8;
+                n += Noise.get(wx * 0.110f, wz * 0.110f) *  3;
+                n += Noise.get(wx * 0.220f, wz * 0.220f) *  1;
+                h[x][z] = Math.max(4, Math.min(Chunk.HEIGHT - 8, 96 + (int) n));
             }
         }
         return h;
